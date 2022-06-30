@@ -15,7 +15,7 @@ def test_app_error():
 
 
 def test_get_stories():
-    url = "http://127.0.0.1:5000/stories"
+    url = "http://localhost:9000/.json?ns=stories"
     res = requests.get(url)
     # resDict = json.loads(res)
     # keyslist = list(resDict.keys())
