@@ -1,24 +1,24 @@
 from flask import Flask
 from flask import request
 from firebase_admin import db
+from flask_cors import cross_origin
 from db.connection import app
 import uuid
 import time
 
 app = Flask(__name__)
 
-
 @app.route("/")
+@cross_origin()
 def hello_world():
     return "<p>Hello, World!</p>"
-
 
 @app.route('/json', methods=['POST', 'GET'])
 def test_json():
     return '{"code": 1, "message": "Hello, World!" }'
 
-
 @app.route('/stories', methods=['POST', 'GET'])
+@cross_origin()
 def stories():
     if request.method == 'GET':
         stories = db.reference("/stories")
