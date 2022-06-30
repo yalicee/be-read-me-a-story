@@ -1,5 +1,5 @@
 import requests
-import json
+import time
 
 def test_app():
     url = "http://127.0.0.1:5000"
@@ -35,3 +35,24 @@ def test_get_stories():
     }]
     assert len(storyList) == 2
     assert type (storyDict) is dict
+
+
+def test_post_story():
+    url = "http://localhost:9000/.json?ns=stories"
+    res = requests.post(url, json={
+            "title": "The Twelve Princesses",
+            "created_by": "andy@email.com",
+            "created_at": int(time.time()),
+            "cover": "gs:/path/to/firebase/image.jpg",
+            "chapters": [
+                {
+                    "created_by": "andy@email.com",
+                    "chapter_src": "gs:/path/to/recording/file.ogg",
+                    "played": False
+                }
+            ],
+            "families": {
+                "fid_0": True,
+                "fid_1": True
+            }
+        })
