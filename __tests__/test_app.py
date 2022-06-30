@@ -37,7 +37,7 @@ def test_get_stories():
     assert type (storyDict) is dict
 
 
-def test_post_story():
+def test_post_story_200():
     url = "http://localhost:9000/.json?ns=stories"
     res = requests.post(url, json={
             "title": "The Twelve Princesses",
@@ -56,3 +56,9 @@ def test_post_story():
                 "fid_1": True
             }
         })
+    assert res.status_code==200
+
+def test_post_story_400():
+    url = "http://localhost:9000/.json?ns=stories"
+    res = requests.post(url, "The Twelve Princesses")
+    assert res.status_code==400
