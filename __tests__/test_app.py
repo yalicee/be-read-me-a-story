@@ -14,10 +14,3 @@ def test_app_error():
     res = requests.get(url)
     assert res.status_code == 404
 
-
-def test_api():
-    url = 'http://127.0.0.1:5000/json'
-    res = requests.get(url)
-    assert res.status_code == 200
-    assert res.json()["code"] == 1
-    assert res.json()["message"] == "Hello, World!"
