@@ -13,10 +13,6 @@ app = Flask(__name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route('/json', methods=['POST', 'GET'])
-def test_json():
-    return '{"code": 1, "message": "Hello, World!" }'
-
 @app.route('/stories', methods=['POST', 'GET'])
 @cross_origin()
 def stories():
@@ -43,4 +39,3 @@ def stories():
                 "fid_1": True
             }
         })
-        print(res)
