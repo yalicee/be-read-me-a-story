@@ -4,3 +4,4 @@ env
 .pytest_cache
 .vscode
 read-me-a-story*.json
+javascript-firebase
