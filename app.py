@@ -39,3 +39,18 @@ def stories():
                 "fid_1": True
             }
         })
+
+@app.route('/users', methods=['POST'])
+@cross_origin()
+def create_user():
+    if request.method == "POST":
+        request_data = request.get_json()
+        users = db.reference("users/" + request_data["userId"])
+        res = users.set({
+           	"email": request_data["email"], 
+	        "fullName": request_data["fullName"],
+	        "displayName": request_data["displayName"],
+	        "familyName": request_data["familyName"],
+            "fid": str(uuid.uuid4()),
+        })
+        return request_data, 201
