@@ -79,9 +79,24 @@ def create_user():
             "display_name": request_data["displayName"],
             "families": {
                 family_id: True,
-            }
+            },
+            "invited":False,
         })
 
         json_family_id = jsonify({"family_id": family_id})
 
         return json_family_id, 201
+
+
+@app.route('/users/<user_id>', methods=['GET'])
+@cross_origin()
+def get_user_by_id(user_id):
+    if request.method == "GET":
+        users_ref = db.reference("users/" + user_id)
+        user = users_ref.get()
+        if user != None:
+            return jsonify(user), 200
+        else:
+            return jsonify({"msg": "User not found"}), 404
+
+
