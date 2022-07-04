@@ -5,6 +5,7 @@ from db.connection import app
 import uuid
 import time
 import json
+import sys
 
 app = Flask(__name__)
 
@@ -59,13 +60,16 @@ def get_stories_by_family(family_id):
             return jsonify({"msg": "Family not found"}), 400
 
 
-@app.route('/stories/<story_id>', methods=["GET"])
+@app.route('/stories/story/<story_id>', methods=['GET'])
 @cross_origin()
 def get_story(story_id):
     if request.method == "GET":
-        story_ref = db.reference("/stories/" + story_id)
-        story = story_ref.get()
-        return jsonify(story), 200
+        try:
+            story_ref = db.reference("stories/" + story_id)
+            story = story_ref.get()
+            return jsonify(story), 200
+        except:
+            return jsonify({"msg": "Story not found"}), 404
 
 
 @ app.route('/users', methods=['POST'])
