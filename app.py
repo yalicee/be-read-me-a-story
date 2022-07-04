@@ -98,10 +98,12 @@ def get_user_by_id(user_id):
                 if user == user_id:
                     return_user = {"name": users[user]["name"]}
                     if users[user]["invited"]==False:
-                        return_user["display_name"] = users[user]["display_name"]
+                        print('here')
+                        return_user = users[user]
                         return_user["status"] = "registered"
                         return jsonify(return_user), 200
                     else:
+                        return_user = users[user]
                         return_user["status"] = "pending"
                         return jsonify(return_user), 200
         except:
