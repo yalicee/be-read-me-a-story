@@ -48,7 +48,10 @@ def get_stories_by_family(family_id):
         stories = stories_ref.get()
         try:
             stories_by_family = {k: v for k, v in stories.items() if v["families"][family_id] == True}
-            return jsonify(stories_by_family), 200
+            tmp_stories = []
+            for story in stories_by_family:
+                tmp_stories.append({story : stories[story]})
+            return jsonify(tmp_stories), 200
         except:
             return jsonify({"msg": "Family not found"}), 400
 
