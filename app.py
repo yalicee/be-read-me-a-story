@@ -8,10 +8,12 @@ import json
 
 app = Flask(__name__)
 
+
 @app.route("/")
 @cross_origin()
 def hello_world():
     return "<p>Hello, World!</p>"
+
 
 @app.route('/stories', methods=['POST'])
 @cross_origin()
@@ -19,7 +21,7 @@ def create_story():
     story = json.loads(request.data)
     if request.method == "POST":
         new_story = db.reference("stories/" + str(uuid.uuid4()))
-        try: 
+        try:
             new_story.set({
                 "title": story["title"],
                 "created_by": story["userId"],
@@ -37,9 +39,10 @@ def create_story():
                 }
             })
             return jsonify(new_story.get()), 201
-        except: 
+        except:
             return jsonify({"msg": "Could not create story"}), 400
- 
+
+
 @app.route('/stories/<family_id>', methods=['GET'])
 @cross_origin()
 def get_stories_by_family(family_id):
@@ -54,6 +57,7 @@ def get_stories_by_family(family_id):
             return jsonify(stories_by_family), 200
         except:
             return jsonify({"msg": "Family not found"}), 400
+
 
 @app.route('/users', methods=['POST'])
 @cross_origin()
@@ -80,7 +84,7 @@ def create_user():
             "families": {
                 family_id: True,
             },
-            "invited":False,
+            "invited": False,
         })
 
         json_family_id = jsonify({"family_id": family_id})
@@ -100,3 +104,13 @@ def get_user_by_id(user_id):
             return jsonify({"msg": "User not found"}), 404
 
 
+@app.route('/users/email/<email>', methods=['GET'])
+@cross_origin()
+def get_user_by_email(email):
+    if request.method == "GET":
+        users_ref = db.reference("users/")
+        users = users_ref.get()
+        for user in users:
+            if users[user]["email"] == email:
+                return {user: users[user]}, 200
+        return jsonify({"msg": "User not found"}), 404
