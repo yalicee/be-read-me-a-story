@@ -127,3 +127,21 @@ def get_user_by_email(email):
             if users[user]["email"] == email:
                 return {user: users[user]}, 200
         return jsonify({"msg": "User not found"}), 404
+
+@app.route('/users/invited', methods=['POST'])
+@cross_origin()
+def create_invited_user():
+    if request.method == 'POST':
+        request_data = request.get_json()
+        invited_user_id = str(uuid.uuid4())
+        family_ref = db.reference("families/" + request_data["familyId"])
+        family = family_ref.get()
+        
+        family["members"][invited_user_id]=True
+        res = family_ref.set(family)
+
+        user_ref = db.reference("users/" + invited_user_id)
+        res = user_ref.set({'email':request_data["email"], 'invited':True, 'families':{request_data["familyId"]:True}})
+
+        return jsonify(family), 201
+           
