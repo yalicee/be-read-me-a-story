@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request
+from flask import request, jsonify
 from firebase_admin import db
 from flask_cors import cross_origin
 from db.connection import app
@@ -41,3 +41,35 @@ def create_story():
         response = app.response_class(
             response=json.dumps(new_story.get()), status=201, mimetype="application/json")
         return response
+
+
+@app.route('/users', methods=['POST'])
+@cross_origin()
+def create_user():
+    if request.method == "POST":
+        request_data = request.get_json()
+        family_id = str(uuid.uuid4())
+        families = db.reference("families/" + family_id)
+        res = families.set({
+            "family_name": request_data["familyName"],
+            "members": {
+                request_data["userId"]: True
+            },
+            "admins": {
+                request_data["userId"]: True
+            },
+            "stories": {}
+        })
+        users = db.reference("users/" + request_data["userId"])
+        res = users.set({
+            "email": request_data["email"],
+            "name": request_data["fullName"],
+            "display_name": request_data["displayName"],
+            "families": {
+                family_id: True,
+            }
+        })
+
+        json_family_id = jsonify({"family_id": family_id})
+
+        return json_family_id, 201
