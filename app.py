@@ -91,22 +91,11 @@ def create_user():
 @cross_origin()
 def get_user_by_id(user_id):
     if request.method == "GET":
-        users_ref = db.reference("users/")
-        users = users_ref.get()
-        try:
-            for user in users:
-                if user == user_id:
-                    return_user = {"name": users[user]["name"]}
-                    if users[user]["invited"]==False:
-                        print('here')
-                        return_user = users[user]
-                        return_user["status"] = "registered"
-                        return jsonify(return_user), 200
-                    else:
-                        return_user = users[user]
-                        return_user["status"] = "pending"
-                        return jsonify(return_user), 200
-        except:
+        users_ref = db.reference("users/" + user_id)
+        user = users_ref.get()
+        if user != None:
+            return jsonify(user), 200
+        else:
             return jsonify({"msg": "User not found"}), 400
 
 
