@@ -95,6 +95,6 @@ def get_user_by_id(user_id):
         if user != None:
             return jsonify(user), 200
         else:
-            return jsonify({"msg": "User not found"}), 400
+            return jsonify({"msg": "User not found"}), 404
 
 
