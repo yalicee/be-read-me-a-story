@@ -59,11 +59,7 @@ def get_stories_by_family(family_id):
             return jsonify({"msg": "Family not found"}), 400
 
 
-<<<<<<< HEAD
-@app.route('/users', methods=['POST'])
-=======
 @app.route('/stories/<family_id>/<story_title>', methods=["GET"])
->>>>>>> main
 @cross_origin()
 def get_story(family_id, story_title):
     if request.method == "GET":
@@ -119,7 +115,6 @@ def get_user_by_id(user_id):
             return jsonify(user), 200
         else:
             return jsonify({"msg": "User not found"}), 404
-<<<<<<< HEAD
 
 
 @app.route('/users/email/<email>', methods=['GET'])
@@ -132,5 +127,3 @@ def get_user_by_email(email):
             if users[user]["email"] == email:
                 return {user: users[user]}, 200
         return jsonify({"msg": "User not found"}), 404
-=======
->>>>>>> main
