@@ -47,14 +47,13 @@ def get_stories_by_family(family_id):
         stories_ref = db.reference("stories/")
         stories = stories_ref.get()
         try:
-            stories_by_family = {k: v for k, v in stories.items() if v["families"][family_id] == True}
-            tmp_stories = []
-            for story in stories_by_family:
-                tmp_stories.append({story : stories[story]})
-            return jsonify(tmp_stories), 200
+            stories_by_family = []
+            for k, v in stories.items():
+                if family_id in v["families"]:
+                    stories_by_family.append({k: v})
+            return jsonify(stories_by_family), 200
         except:
             return jsonify({"msg": "Family not found"}), 400
-
 
 @app.route('/users', methods=['POST'])
 @cross_origin()
