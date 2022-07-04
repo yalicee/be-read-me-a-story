@@ -1,7 +1,4 @@
-from crypt import methods
-from tkinter.font import families
-from flask import Flask
-from flask import request, jsonify
+from flask import Flask, request, jsonify
 from firebase_admin import db
 from flask_cors import cross_origin
 from db.connection import app
@@ -11,12 +8,10 @@ import json
 
 app = Flask(__name__)
 
-
 @app.route("/")
 @cross_origin()
 def hello_world():
     return "<p>Hello, World!</p>"
-
 
 @app.route('/stories', methods=['POST'])
 @cross_origin()
@@ -54,7 +49,7 @@ def get_stories_by_family(family_id):
             stories_by_family = {k: v for k, v in stories.items() if v["families"][family_id] == True}
             return jsonify(stories_by_family), 200
         except:
-            return 400
+            return jsonify({"msg": "Family not found"}), 400
 
 
 @app.route('/users', methods=['POST'])
