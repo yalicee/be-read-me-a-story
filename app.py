@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from firebase_admin import db
 from flask_cors import cross_origin
-from grpc import Status
 from db.connection import app
 import uuid
 import time
