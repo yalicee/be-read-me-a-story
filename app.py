@@ -115,3 +115,15 @@ def get_user_by_id(user_id):
             return jsonify(user), 200
         else:
             return jsonify({"msg": "User not found"}), 404
+
+
+@app.route('/users/email/<email>', methods=['GET'])
+@cross_origin()
+def get_user_by_email(email):
+    if request.method == "GET":
+        users_ref = db.reference("users/")
+        users = users_ref.get()
+        for user in users:
+            if users[user]["email"] == email:
+                return {user: users[user]}, 200
+        return jsonify({"msg": "User not found"}), 404
