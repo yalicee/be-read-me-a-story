@@ -59,17 +59,13 @@ def get_stories_by_family(family_id):
             return jsonify({"msg": "Family not found"}), 400
 
 
-@app.route('/stories/<family_id>/<story_title>', methods=["GET"])
+@app.route('/stories/<story_id>', methods=["GET"])
 @cross_origin()
-def get_story(family_id, story_title):
+def get_story(story_id):
     if request.method == "GET":
-        family_stories = json.loads(get_stories_by_family(family_id).data)
-        for story in family_stories:
-            returnedStory = list(story.values())[0]
-            if list(story.values())[0]["title"] == story_title:
-                return jsonify(returnedStory), 200
-            else:
-                return jsonify({"msg": "Story not found"}), 404
+        story_ref = db.reference("/stories/" + story_id)
+        story = story_ref.get()
+        return jsonify(story), 200
 
 
 @ app.route('/users', methods=['POST'])
