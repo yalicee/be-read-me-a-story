@@ -1,3 +1,5 @@
+from crypt import methods
+from tkinter.font import families
 from flask import Flask
 from flask import request, jsonify
 from firebase_admin import db
@@ -41,6 +43,18 @@ def create_story():
         response = app.response_class(
             response=json.dumps(new_story.get()), status=201, mimetype="application/json")
         return response
+
+@app.route('/stories/<family_id>', methods=['GET'])
+@cross_origin()
+def get_stories_by_family(family_id):
+    if request.method == "GET":
+        stories_ref = db.reference("stories/")
+        stories = stories_ref.get()
+        try:
+            stories_by_family = {k: v for k, v in stories.items() if v["families"][family_id] == True}
+            return jsonify(stories_by_family), 200
+        except:
+            return 400
 
 
 @app.route('/users', methods=['POST'])
