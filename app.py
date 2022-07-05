@@ -122,7 +122,8 @@ def get_user_by_email(email):
         for user in users:
             if users[user]["email"] == email:
                 return {user: users[user]}, 200
-        return jsonify({"msg": "User not found"}), 404
+        return jsonify({"new_user": True}), 204
+
 
 @app.route('/users/invited', methods=['POST'])
 @cross_origin()
