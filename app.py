@@ -105,7 +105,7 @@ def create_user():
         return json_family_id, 201
 
 
-@ app.route('/users/<user_id>', methods=['GET'])
+@ app.route('/users/<user_id>', methods=['GET', 'PATCH'])
 @ cross_origin()
 def get_user_by_id(user_id):
     if request.method == "GET":
@@ -116,6 +116,15 @@ def get_user_by_id(user_id):
         else:
             return jsonify({"msg": "User not found"}), 404
 
+    if request.method == "PATCH":
+        users_ref = db.reference("users/" + user_id)
+        user = users_ref.get()
+        request_data = request.get_json()
+        user["display_name"]=request_data["displayName"]
+        user["name"]=request_data["fullName"]
+        user["invited"]=False
+        res = users_ref.set(user)
+        return jsonify(users_ref.get()), 202
 
 @app.route('/users/email/<email>', methods=['GET'])
 @cross_origin()
