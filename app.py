@@ -60,9 +60,9 @@ def get_stories_by_family(family_id):
             return jsonify({"msg": "Family not found"}), 400
 
 
-@app.route('/stories/story/<story_id>', methods=['GET'])
+@app.route('/stories/story/<story_id>', methods=['GET', 'PATCH'])
 @cross_origin()
-def get_story(story_id):
+def story(story_id):
     if request.method == "GET":
         try:
             story_ref = db.reference("stories/" + story_id)
@@ -70,6 +70,20 @@ def get_story(story_id):
             return jsonify(story), 200
         except:
             return jsonify({"msg": "Story not found"}), 404
+    if request.method == "PATCH":
+        try:
+            story_ref = db.reference("/stories/" + story_id + "/chapters")
+            chapters = story_ref.get()
+            request_data = request.get_json()
+            chapters.append({
+                "created_by": request_data["userId"],
+                "chapter_src": request_data["chapterSource"],
+                "played": False
+            })
+            res = story_ref.set(chapters)
+            return jsonify({"msg": "Chapter added"}), 201
+        except:
+            return jsonify({"msg": "Could not update story"}), 400
 
 
 @ app.route('/users', methods=['POST'])
@@ -104,23 +118,24 @@ def create_user():
 
         return json_family_id, 201
 
+
 @ app.route('/users/invites/<family_id>', methods=['POST'])
 @ cross_origin()
 def create_invited_user_in_family(family_id):
     if request.method == "POST":
         request_data = request.get_json()
-        
+
         try:
             family_ref = db.reference("families/" + family_id)
 
             family = family_ref.get()
-            
-            family["members"][request_data["userId"]]=True
+
+            family["members"][request_data["userId"]] = True
             family_ref.set(family)
         except:
             return jsonify({"msg": "Family could not be updated"}), 400
 
-        try: 
+        try:
             users = db.reference("users/" + request_data["userId"])
             users.set({
                 "email": request_data["email"],
@@ -133,12 +148,13 @@ def create_invited_user_in_family(family_id):
             })
             invite_ref = db.reference("invites/" + request_data["userId"])
             invite_ref.delete()
-            
+
             json_family_id = jsonify({"family_id": family_id})
 
             return json_family_id, 201
         except:
             return jsonify({"msg": "User could not be created"}), 400
+
 
 @ app.route('/users/<user_id>', methods=['GET', 'PATCH'])
 @ cross_origin()
@@ -155,11 +171,12 @@ def get_user_by_id(user_id):
         users_ref = db.reference("users/" + user_id)
         user = users_ref.get()
         request_data = request.get_json()
-        user["display_name"]=request_data["displayName"]
-        user["name"]=request_data["fullName"]
-        user["invited"]=False
+        user["display_name"] = request_data["displayName"]
+        user["name"] = request_data["fullName"]
+        user["invited"] = False
         res = users_ref.set(user)
         return jsonify(users_ref.get()), 202
+
 
 @app.route('/users/email/<email>', methods=['GET'])
 @cross_origin()
@@ -180,7 +197,7 @@ def create_invited_user():
         request_data = request.get_json()
 
         invite_ref = db.reference("invites/")
-        invite_ref.push({'email':request_data["email"], 'invited':True, 'families':{request_data["familyId"]:True}})
+        invite_ref.push({'email': request_data["email"], 'invited': True, 'families': {
+                        request_data["familyId"]: True}})
 
         return jsonify({"msg": "user created"}), 201
-           
