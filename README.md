@@ -1,30 +1,49 @@
-# Installation
+# Read me a story
+
+Read me a story is an app that allows family members record, upload and playback bedtime stories for young children in the family when they are unable to read them in person.
+
+A parent can sign up to the app, create a family group and invite their partner or relatives to join. Family members can then choose to record and upload stories, or view a list of stories created by the family. Stories can be selected from the list and played back to the child.
+
+Read me a story was created by Minimum Viable Panic as their final project in the [Northcoders](https://northcoders.com) coding bootcamp. You can [view the live app](#) or watch the [product demonstration](#).
+
+## Installation
+
+Follow the instructions below to configure and run your own instance of the Read me a story API.
+
+### Requirements
+
+This project was built using Flask and requires Python 3.7 or above.
+
+### Setup the project
+
+To run the project locally, first download the source, create a virtual environment and install the dependencies.
 
 ```
+git clone https://github.com/yangalexyangg/be-read-me-a-story.git
+cd be-read-me-a-story
 python3 -m venv venv
 source venv/bin/activate
-export GOOGLE_APPLICATION_CREDENTIALS="/home/username/path/to/repository/service-account-file.json"
-
 pip install -r requirements.txt
 ```
 
-Note: you will need to initalise the virtual environement whenever you want to run the project, and export your credential key. You may need to re-install dependencies when more are added.
+Note: Use `deactivate` to leave the virtual environment at any point.
 
-To exit the virtual environment, run:
+### Configure Firebase
+
+You will need to create a [Firebase](https://firebase.google.com/) project, enable Realtime Database and generate a Service Account key.
+
+After downloading the key, set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable:
 
 ```
-deactivate
+export GOOGLE_APPLICATION_CREDENTIALS="/home/username/path/to/repository/service-account-file.json"
 ```
 
-## Configuring firebase-admin
+### Usage
 
-To access firebase you will need a service agent key. These should be added to the root of this direction, but you should NOT commit them (there is a .gitignore inplace).
-
-# Running
-
-Type these in terminal to run flask/pytest:
+Having setup the project you can start the local server:
 
 ```
 flask run
-pytest
 ```
+
+By default the server will start on [http://127.0.0.1:5000](http://127.0.0.1:5000). If you want to run the server in debug mode, set set `FLASK_ENV=development` before starting Flask.
