@@ -125,7 +125,6 @@ def get_user_by_id(user_id):
         user["invited"]=False
         res = users_ref.set(user)
         return jsonify(users_ref.get()), 202
-        
 
 @app.route('/users/email/<email>', methods=['GET'])
 @cross_origin()
