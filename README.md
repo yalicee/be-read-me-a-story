@@ -4,7 +4,7 @@ Read me a story is an app that allows family members record, upload and playback
 
 A parent can sign up to the app, create a family group and invite their partner or relatives to join. Family members can then choose to record and upload stories, or view a list of stories created by the family. Stories can be selected from the list and played back to the child.
 
-Read me a story was created by Minimum Viable Panic as their final project in the [Northcoders](https://northcoders.com) coding bootcamp. You can [view the live app](#) or watch the [product demonstration](#).
+Read me a story was created by Minimum Viable Panic as their final project in the [Northcoders](https://northcoders.com) coding bootcamp. To find out more about the project check out the [product demonstration](#) or head on over to the [live app](#).
 
 ## Installation
 
