@@ -56,4 +56,4 @@ Minimum Viable Panic are [Rob](https://github.com/RobParry6/), [Charlotte](https
 
 ### Acknowledgements
 
-Thanks to August, Emily and the other Northcoders mentors for their support!
+Thanks to August, Emily and the other mentors for their support!
