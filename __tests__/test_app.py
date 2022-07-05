@@ -10,7 +10,6 @@ def test_app():
 
 
 def test_app_error():
-    url = 'http://127.0.0.1:5000/doggos'
+    url = "http://127.0.0.1:5000/doggos"
     res = requests.get(url)
     assert res.status_code == 404
-

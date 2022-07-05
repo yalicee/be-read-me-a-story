@@ -16,35 +16,35 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route('/stories', methods=['POST'])
+@app.route("/stories", methods=["POST"])
 @cross_origin()
 def create_story():
     story = json.loads(request.data)
     if request.method == "POST":
         new_story = db.reference("stories/" + str(uuid.uuid4()))
         try:
-            new_story.set({
-                "title": story["title"],
-                "created_by": story["userId"],
-                "created_at": int(time.time()),
-                "cover": "gs:/path/to/firebase/image.jpg",
-                "chapters": [
-                    {
-                        "created_by": story["userId"],
-                        "chapter_src": story["chapterSource"],
-                        "played": False
-                    }
-                ],
-                "families": {
-                    story["familyId"]: True
+            new_story.set(
+                {
+                    "title": story["title"],
+                    "created_by": story["userId"],
+                    "created_at": int(time.time()),
+                    "cover": "gs:/path/to/firebase/image.jpg",
+                    "chapters": [
+                        {
+                            "created_by": story["userId"],
+                            "chapter_src": story["chapterSource"],
+                            "played": False,
+                        }
+                    ],
+                    "families": {story["familyId"]: True},
                 }
-            })
+            )
             return jsonify(new_story.get()), 201
         except:
             return jsonify({"msg": "Could not create story"}), 400
 
 
-@app.route('/stories/<family_id>', methods=['GET'])
+@app.route("/stories/<family_id>", methods=["GET"])
 @cross_origin()
 def get_stories_by_family(family_id):
     if request.method == "GET":
@@ -60,7 +60,7 @@ def get_stories_by_family(family_id):
             return jsonify({"msg": "Family not found"}), 400
 
 
-@app.route('/stories/story/<story_id>', methods=['GET'])
+@app.route("/stories/story/<story_id>", methods=["GET"])
 @cross_origin()
 def get_story(story_id):
     if request.method == "GET":
@@ -72,41 +72,41 @@ def get_story(story_id):
             return jsonify({"msg": "Story not found"}), 404
 
 
-@ app.route('/users', methods=['POST'])
-@ cross_origin()
+@app.route("/users", methods=["POST"])
+@cross_origin()
 def create_user():
     if request.method == "POST":
         request_data = request.get_json()
         family_id = str(uuid.uuid4())
         families = db.reference("families/" + family_id)
-        res = families.set({
-            "family_name": request_data["familyName"],
-            "members": {
-                request_data["userId"]: True
-            },
-            "admins": {
-                request_data["userId"]: True
-            },
-            "stories": {}
-        })
+        res = families.set(
+            {
+                "family_name": request_data["familyName"],
+                "members": {request_data["userId"]: True},
+                "admins": {request_data["userId"]: True},
+                "stories": {},
+            }
+        )
         users = db.reference("users/" + request_data["userId"])
-        res = users.set({
-            "email": request_data["email"],
-            "name": request_data["fullName"],
-            "display_name": request_data["displayName"],
-            "families": {
-                family_id: True,
-            },
-            "invited": False,
-        })
+        res = users.set(
+            {
+                "email": request_data["email"],
+                "name": request_data["fullName"],
+                "display_name": request_data["displayName"],
+                "families": {
+                    family_id: True,
+                },
+                "invited": False,
+            }
+        )
 
         json_family_id = jsonify({"family_id": family_id})
 
         return json_family_id, 201
 
 
-@ app.route('/users/<user_id>', methods=['GET', 'PATCH'])
-@ cross_origin()
+@app.route("/users/<user_id>", methods=["GET", "PATCH"])
+@cross_origin()
 def get_user_by_id(user_id):
     if request.method == "GET":
         users_ref = db.reference("users/" + user_id)
@@ -120,13 +120,14 @@ def get_user_by_id(user_id):
         users_ref = db.reference("users/" + user_id)
         user = users_ref.get()
         request_data = request.get_json()
-        user["display_name"]=request_data["displayName"]
-        user["name"]=request_data["fullName"]
-        user["invited"]=False
+        user["display_name"] = request_data["displayName"]
+        user["name"] = request_data["fullName"]
+        user["invited"] = False
         res = users_ref.set(user)
         return jsonify(users_ref.get()), 202
 
-@app.route('/users/email/<email>', methods=['GET'])
+
+@app.route("/users/email/<email>", methods=["GET"])
 @cross_origin()
 def get_user_by_email(email):
     if request.method == "GET":
@@ -138,20 +139,25 @@ def get_user_by_email(email):
         return jsonify({"new_user": True}), 204
 
 
-@app.route('/users/invited', methods=['POST'])
+@app.route("/users/invited", methods=["POST"])
 @cross_origin()
 def create_invited_user():
-    if request.method == 'POST':
+    if request.method == "POST":
         request_data = request.get_json()
         invited_user_id = str(uuid.uuid4())
         family_ref = db.reference("families/" + request_data["familyId"])
         family = family_ref.get()
-        
-        family["members"][invited_user_id]=True
+
+        family["members"][invited_user_id] = True
         res = family_ref.set(family)
 
         user_ref = db.reference("users/" + invited_user_id)
-        res = user_ref.set({'email':request_data["email"], 'invited':True, 'families':{request_data["familyId"]:True}})
+        res = user_ref.set(
+            {
+                "email": request_data["email"],
+                "invited": True,
+                "families": {request_data["familyId"]: True},
+            }
+        )
 
         return jsonify(family), 201
-           
