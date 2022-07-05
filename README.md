@@ -1,10 +1,10 @@
 # Read Me A Story
 
-Read Me A Story is an app that allows family members record, upload and playback bedtime stories for young children in the family when they are unable to read them in person.
+Read Me A Story is an app that allows family members to record, upload and playback bedtime stories for young children in the family when they are unable to read them in person.
 
 A parent can sign up to the app, create a family group and invite their partner or relatives to join. Family members can then choose to record and upload stories, or view a list of stories created by the family. Stories can be selected from the list and played back to the child.
 
-Read Me A Story was created by Minimum Viable Panic as their final project in the [Northcoders](https://northcoders.com) coding bootcamp. To find out more about the project check out the [product demonstration](#) or head on over to the [live app](#).
+To find out more about the project watch the [product demonstration](#), visit the [live app](#) or take a look at the accompanying [front-end respository](https://github.com/yangalexyangg/fe-read-me-a-story/).
 
 ## Installation
 
@@ -46,4 +46,14 @@ Having setup the project you can start the local server:
 flask run
 ```
 
-By default the server will start on [http://127.0.0.1:5000](http://127.0.0.1:5000). If you want to run the server in debug mode, set set `FLASK_ENV=development` before starting Flask.
+By default the server will start on [http://127.0.0.1:5000](http://127.0.0.1:5000). If you want to run the server in debug mode, run `export FLASK_ENV=development` before starting Flask.
+
+## About
+
+Read Me A Story was created by Minimum Viable Panic as their final project in the [Northcoders](https://northcoders.com) coding bootcamp.
+
+Minimum Viable Panic are [Rob](https://github.com/RobParry6/), [Charlotte](https://github.com/321jellyfish/), [Alex](https://github.com/yangalexyangg/) and [Andy](https://github.com/akflds/).
+
+### Acknowledgements
+
+Thanks to August, Emily and the other Northcoders mentors for their support!
