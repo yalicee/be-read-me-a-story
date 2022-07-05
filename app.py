@@ -104,6 +104,41 @@ def create_user():
 
         return json_family_id, 201
 
+@ app.route('/users/invites/<family_id>', methods=['POST'])
+@ cross_origin()
+def create_invited_user_in_family(family_id):
+    if request.method == "POST":
+        request_data = request.get_json()
+        
+        try:
+            family_ref = db.reference("families/" + family_id)
+
+            family = family_ref.get()
+            
+            family["members"][request_data["userId"]]=True
+            family_ref.set(family)
+        except:
+            return jsonify({"msg": "Family could not be updated"}), 400
+
+        try: 
+            users = db.reference("users/" + request_data["userId"])
+            users.set({
+                "email": request_data["email"],
+                "name": request_data["fullName"],
+                "display_name": request_data["displayName"],
+                "families": {
+                    family_id: True,
+                },
+                "invited": False,
+            })
+            invite_ref = db.reference("invites/" + request_data["userId"])
+            invite_ref.delete()
+            
+            json_family_id = jsonify({"family_id": family_id})
+
+            return json_family_id, 201
+        except:
+            return jsonify({"msg": "User could not be created"}), 400
 
 @ app.route('/users/<user_id>', methods=['GET', 'PATCH'])
 @ cross_origin()
@@ -130,11 +165,11 @@ def get_user_by_id(user_id):
 @cross_origin()
 def get_user_by_email(email):
     if request.method == "GET":
-        users_ref = db.reference("users/")
-        users = users_ref.get()
-        for user in users:
-            if users[user]["email"] == email:
-                return {user: users[user]}, 200
+        invites_ref = db.reference("invites/")
+        invited_users = invites_ref.get()
+        for invited_user in invited_users:
+            if invited_users[invited_user]["email"] == email:
+                return {invited_user: invited_users[invited_user]}, 200
         return jsonify({"new_user": True}), 204
 
 
@@ -143,15 +178,9 @@ def get_user_by_email(email):
 def create_invited_user():
     if request.method == 'POST':
         request_data = request.get_json()
-        invited_user_id = str(uuid.uuid4())
-        family_ref = db.reference("families/" + request_data["familyId"])
-        family = family_ref.get()
-        
-        family["members"][invited_user_id]=True
-        res = family_ref.set(family)
 
-        user_ref = db.reference("users/" + invited_user_id)
-        res = user_ref.set({'email':request_data["email"], 'invited':True, 'families':{request_data["familyId"]:True}})
+        invite_ref = db.reference("invites/")
+        invite_ref.push({'email':request_data["email"], 'invited':True, 'families':{request_data["familyId"]:True}})
 
-        return jsonify(family), 201
+        return jsonify({"msg": "user created"}), 201
            
