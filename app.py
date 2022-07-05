@@ -5,7 +5,6 @@ from db.connection import app
 import uuid
 import time
 import json
-import sys
 
 app = Flask(__name__)
 
@@ -16,35 +15,35 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route('/stories', methods=['POST'])
+@app.route("/stories", methods=["POST"])
 @cross_origin()
 def create_story():
     story = json.loads(request.data)
     if request.method == "POST":
         new_story = db.reference("stories/" + str(uuid.uuid4()))
         try:
-            new_story.set({
-                "title": story["title"],
-                "created_by": story["userId"],
-                "created_at": int(time.time()),
-                "cover": "gs:/path/to/firebase/image.jpg",
-                "chapters": [
-                    {
-                        "created_by": story["userId"],
-                        "chapter_src": story["chapterSource"],
-                        "played": False
-                    }
-                ],
-                "families": {
-                    story["familyId"]: True
+            new_story.set(
+                {
+                    "title": story["title"],
+                    "created_by": story["userId"],
+                    "created_at": int(time.time()),
+                    "cover": "gs:/path/to/firebase/image.jpg",
+                    "chapters": [
+                        {
+                            "created_by": story["userId"],
+                            "chapter_src": story["chapterSource"],
+                            "played": False,
+                        }
+                    ],
+                    "families": {story["familyId"]: True},
                 }
-            })
+            )
             return jsonify(new_story.get()), 201
         except:
             return jsonify({"msg": "Could not create story"}), 400
 
 
-@app.route('/stories/<family_id>', methods=['GET'])
+@app.route("/stories/<family_id>", methods=["GET"])
 @cross_origin()
 def get_stories_by_family(family_id):
     if request.method == "GET":
@@ -86,33 +85,33 @@ def story(story_id):
             return jsonify({"msg": "Could not update story"}), 400
 
 
-@ app.route('/users', methods=['POST'])
-@ cross_origin()
+@app.route("/users", methods=["POST"])
+@cross_origin()
 def create_user():
     if request.method == "POST":
         request_data = request.get_json()
         family_id = str(uuid.uuid4())
         families = db.reference("families/" + family_id)
-        res = families.set({
-            "family_name": request_data["familyName"],
-            "members": {
-                request_data["userId"]: True
-            },
-            "admins": {
-                request_data["userId"]: True
-            },
-            "stories": {}
-        })
+        res = families.set(
+            {
+                "family_name": request_data["familyName"],
+                "members": {request_data["userId"]: True},
+                "admins": {request_data["userId"]: True},
+                "stories": {},
+            }
+        )
         users = db.reference("users/" + request_data["userId"])
-        res = users.set({
-            "email": request_data["email"],
-            "name": request_data["fullName"],
-            "display_name": request_data["displayName"],
-            "families": {
-                family_id: True,
-            },
-            "invited": False,
-        })
+        res = users.set(
+            {
+                "email": request_data["email"],
+                "name": request_data["fullName"],
+                "display_name": request_data["displayName"],
+                "families": {
+                    family_id: True,
+                },
+                "invited": False,
+            }
+        )
 
         json_family_id = jsonify({"family_id": family_id})
 
@@ -137,15 +136,17 @@ def create_invited_user_in_family(family_id):
 
         try:
             users = db.reference("users/" + request_data["userId"])
-            users.set({
-                "email": request_data["email"],
-                "name": request_data["fullName"],
-                "display_name": request_data["displayName"],
-                "families": {
-                    family_id: True,
-                },
-                "invited": False,
-            })
+            users.set(
+                {
+                    "email": request_data["email"],
+                    "name": request_data["fullName"],
+                    "display_name": request_data["displayName"],
+                    "families": {
+                        family_id: True,
+                    },
+                    "invited": False,
+                }
+            )
             invite_ref = db.reference("invites/" + request_data["userId"])
             invite_ref.delete()
 
@@ -190,14 +191,19 @@ def get_user_by_email(email):
         return jsonify({"new_user": True}), 204
 
 
-@app.route('/users/invited', methods=['POST'])
+@app.route("/users/invited", methods=["POST"])
 @cross_origin()
 def create_invited_user():
-    if request.method == 'POST':
+    if request.method == "POST":
         request_data = request.get_json()
 
         invite_ref = db.reference("invites/")
-        invite_ref.push({'email': request_data["email"], 'invited': True, 'families': {
-                        request_data["familyId"]: True}})
+        invite_ref.push(
+            {
+                "email": request_data["email"],
+                "invited": True,
+                "families": {request_data["familyId"]: True},
+            }
+        )
 
         return jsonify({"msg": "user created"}), 201
