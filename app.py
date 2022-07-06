@@ -147,7 +147,7 @@ def create_invited_user_in_family(family_id):
                     "invited": False,
                 }
             )
-            invite_ref = db.reference("invites/" + request_data["userId"])
+            invite_ref = db.reference("invites/" + request_data["inviteId"])
             invite_ref.delete()
 
             json_family_id = jsonify({"family_id": family_id})
