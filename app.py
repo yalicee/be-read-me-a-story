@@ -189,6 +189,8 @@ def get_user_by_email(email):
             for invited_user in invited_users:
                 if invited_users[invited_user]["email"] == email:
                     return {invited_user: invited_users[invited_user]}, 200
+                else:
+                    return jsonify({"new_user": True}), 204
         except:
             return jsonify({"new_user": True}), 204
 
