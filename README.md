@@ -12,7 +12,7 @@ Follow the instructions below to configure and run your own instance of the Read
 
 ### Requirements
 
-This API was built using Flask and requires Python 3.7 or above.
+This API was built using Flask and Firebase. It requires Python 3.7 or above.
 
 ### Setup the project
 
