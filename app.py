@@ -183,12 +183,14 @@ def get_user_by_id(user_id):
 @cross_origin()
 def get_user_by_email(email):
     if request.method == "GET":
-        invites_ref = db.reference("invites/")
-        invited_users = invites_ref.get()
-        for invited_user in invited_users:
-            if invited_users[invited_user]["email"] == email:
-                return {invited_user: invited_users[invited_user]}, 200
-        return jsonify({"new_user": True}), 204
+        try:
+            invites_ref = db.reference("invites/")
+            invited_users = invites_ref.get()
+            for invited_user in invited_users:
+                if invited_users[invited_user]["email"] == email:
+                    return {invited_user: invited_users[invited_user]}, 200
+        except:
+            return jsonify({"new_user": True}), 204
 
 
 @app.route("/users/invited", methods=["POST"])
