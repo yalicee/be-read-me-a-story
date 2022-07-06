@@ -187,11 +187,12 @@ def get_user_by_email(email):
             invites_ref = db.reference("invites/")
             invited_users = invites_ref.get()
             for invited_user in invited_users:
+                print(invited_users[invited_user]["email"])
                 if invited_users[invited_user]["email"] == email:
                     return {invited_user: invited_users[invited_user]}, 200
-                else:
-                    return jsonify({"new_user": True}), 204
+            return jsonify({"new_user": True}), 204
         except:
+            print("down here")
             return jsonify({"new_user": True}), 204
 
 
