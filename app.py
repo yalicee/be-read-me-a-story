@@ -197,15 +197,19 @@ def get_user_by_email(email):
 @cross_origin()
 def create_invited_user():
     if request.method == "POST":
-        request_data = request.get_json()
+        try:
+            request_data = request.get_json()
 
-        invite_ref = db.reference("invites/")
-        invite_ref.push(
-            {
-                "email": request_data["email"],
-                "invited": True,
-                "families": {request_data["familyId"]: True},
-            }
-        )
+            invite_ref = db.reference("invites/")
+            invite_ref.push(
+                {
+                    "email": request_data["email"],
+                    "invited": True,
+                    "families": {request_data["familyId"]: True},
+                }
+            )
 
-        return jsonify({"msg": "user created"}), 201
+            return jsonify({"msg": "user created"}), 201
+
+        except:
+            return jsonify({"msg": "There was an error during the invitation provess"}),
