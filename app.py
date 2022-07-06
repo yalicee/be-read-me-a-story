@@ -147,7 +147,7 @@ def create_invited_user_in_family(family_id):
                     "invited": False,
                 }
             )
-            invite_ref = db.reference("invites/" + request_data["userId"])
+            invite_ref = db.reference("invites/" + request_data["inviteId"])
             invite_ref.delete()
 
             json_family_id = jsonify({"family_id": family_id})
@@ -183,27 +183,34 @@ def get_user_by_id(user_id):
 @cross_origin()
 def get_user_by_email(email):
     if request.method == "GET":
-        invites_ref = db.reference("invites/")
-        invited_users = invites_ref.get()
-        for invited_user in invited_users:
-            if invited_users[invited_user]["email"] == email:
-                return {invited_user: invited_users[invited_user]}, 200
-        return jsonify({"new_user": True}), 204
+        try:
+            invites_ref = db.reference("invites/")
+            invited_users = invites_ref.get()
+            for invited_user in invited_users:
+                if invited_users[invited_user]["email"] == email:
+                    return {invited_user: invited_users[invited_user]}, 200
+            return jsonify({"new_user": True}), 204
+        except:
+            return jsonify({"new_user": True}), 204
 
 
 @app.route("/users/invited", methods=["POST"])
 @cross_origin()
 def create_invited_user():
     if request.method == "POST":
-        request_data = request.get_json()
+        try:
+            request_data = request.get_json()
 
-        invite_ref = db.reference("invites/")
-        invite_ref.push(
-            {
-                "email": request_data["email"],
-                "invited": True,
-                "families": {request_data["familyId"]: True},
-            }
-        )
+            invite_ref = db.reference("invites/")
+            invite_ref.push(
+                {
+                    "email": request_data["email"],
+                    "invited": True,
+                    "families": {request_data["familyId"]: True},
+                }
+            )
 
-        return jsonify({"msg": "user created"}), 201
+            return jsonify({"msg": "user created"}), 201
+
+        except:
+            return jsonify({"msg": "There was an error during the invitation provess"}),
